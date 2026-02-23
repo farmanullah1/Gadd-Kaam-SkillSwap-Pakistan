@@ -1,89 +1,139 @@
 // skillswap-pakistan-frontend/src/App.js
 
 import React, { useState, useEffect } from 'react';
-// No need to import ChatbotModal directly here if it's managed by index.js
-// If App.js directly manages ChatbotModal, then you would import it:
-// import ChatbotModal from './components/ChatbotModal';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import '../styles/global.css'; // Your global styles
-// Note: chatbot-modal.css is imported within ChatbotModal.js now
+// 1. Import modular CSS files
+import './styles/global.css';
+import './styles/navbar.css';
+import './styles/homepage.css';
+import './styles/forms.css';
+import './styles/footer.css';
+import './styles/popup.css';
+import './styles/dashboard.css';
+import './styles/profile.css';
+import './styles/offer-skill.css';
+import './styles/my-skills.css';
+import './styles/marketplace.css';
+import './styles/WomenOnlyZonePage.css';
+import './styles/LoadingSpinner.css';
+import './styles/chatbot-modal.css'; 
+import './styles/requests.css';
+import './styles/reviews.css';
+import './styles/admin.css';
 
-// Main App component, responsible for overall layout and chatbot toggle
+// 2. Import all your components
+import HomePage from './components/HomePage';
+import SignupPage from './components/SignupPage';
+import LoginPage from './components/LoginPage';
+import DashboardPage from './components/DashboardPage';
+import ProfilePage from './components/ProfilePage';
+import OfferSkillPage from './components/OfferSkillPage';
+import MySkillPage from './components/MySkillPage';
+import MarketplacePage from './components/MarketplacePage';
+import WomenOnlyZonePage from './components/WomenOnlyZonePage';
+import ReceivedRequestsPage from './components/ReceivedRequestsPage';
+import MessagesPage from './components/MessagesPage';
+import ReviewsPage from './components/ReviewsPage';
+
+// Content Pages
+import AboutUsPage from './components/AboutUsPage';
+import ContactUsPage from './components/ContactUsPage';
+import FAQPage from './components/FAQPage';
+import DisputeResolutionPage from './components/DisputeResolutionPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import TermsOfServicePage from './components/TermsOfServicePage';
+
+// Admin Components
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboard from './components/admin/AdminDashboard';
+import ManageUsers from './components/admin/ManageUsers';
+import ManageSkills from './components/admin/ManageSkills';
+import ManageReports from './components/admin/ManageReports';
+import AdminRoute from './components/AdminRoute';
+
+// Chatbot & i18n
+import ChatbotModal from './components/ChatbotModal';
+import './i18n';
+
 function App() {
-    // State to control chatbot modal visibility
-    // If index.js is managing this, you might receive it as a prop
-    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-    // State to control dark/light mode
-    const [isDarkMode, setIsDarkMode] = useState(false);
+  // Global States
+  const [showChatbot, setShowChatbot] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Effect to set initial theme based on localStorage or system preference
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            setIsDarkMode(true);
-            document.body.classList.add('dark-mode');
-        } else {
-            setIsDarkMode(false);
-            document.body.classList.remove('dark-mode');
-        }
-    }, []);
+  // Toggle handlers
+  const toggleChatbot = () => setShowChatbot(prev => !prev);
+  const toggleDarkMode = () => setIsDarkMode(prevMode => !prevMode);
 
-    // Effect to apply/remove dark mode class to body and save preference to localStorage
-    useEffect(() => {
-        if (isDarkMode) {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
+  // Effect to set initial theme based on localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.body.classList.add('dark-mode');
+    } else {
+      setIsDarkMode(false);
+      document.body.classList.remove('dark-mode');
+    }
+  }, []);
 
-    // Function to toggle between dark and light mode
-    const toggleDarkMode = () => {
-        setIsDarkMode(prevMode => !prevMode);
-    };
+  // Effect to apply/remove dark mode class and save preference
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
-    return (
-        <div className={`home-page-container ${isDarkMode ? 'dark-mode' : ''}`}>
-            {/* Header section with app title and theme toggle */}
-            <header className="bg-gray-200 dark:bg-gray-800 p-4 flex justify-between items-center transition-colors duration-300">
-                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">My App</h1>
-                <button
-                    onClick={toggleDarkMode}
-                    className="px-4 py-2 rounded-full bg-blue-500 text-white dark:bg-purple-600 hover:opacity-80 transition-opacity duration-300"
-                >
-                    Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
-                </button>
-            </header>
+  return (
+    <div className={`app-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route exact path="/" element={<HomePage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/signup" element={<SignupPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/login" element={<LoginPage onChatbotToggle={toggleChatbot} />} />
+          
+          {/* Content Pages */}
+          <Route exact path="/about-us" element={<AboutUsPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/about" element={<AboutUsPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/contact-us" element={<ContactUsPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/contact" element={<ContactUsPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/faq-page" element={<FAQPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dispute-resolution-page" element={<DisputeResolutionPage onChatbotToggle={toggleChatbot} />} />
+          
+          {/* Legal Pages */}
+          <Route exact path="/privacy-policy" element={<PrivacyPolicyPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/terms-of-service" element={<TermsOfServicePage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/forgot-password" element={<LoginPage onChatbotToggle={toggleChatbot} />} />
 
-            {/* Main content area */}
-            <main className="flex-grow p-8">
-                <section className="section-container">
-                    <h2 className="section-title">Welcome to SkillSwap Pakistan</h2>
-                    <p className="section-subtitle">
-                        Your platform for local services. Click the button below to chat with our AI assistant.
-                    </p>
-                    <div className="flex justify-center mt-8">
-                        {/* Button to open the chatbot modal */}
-                        <button
-                            onClick={() => setIsChatbotOpen(true)} // This will open the chatbot
-                            className="btn btn-primary-orange"
-                        >
-                            Open AI Assistant
-                        </button>
-                    </div>
-                </section>
-            </main>
+          {/* Protected Dashboard Routes */}
+          <Route exact path="/dashboard" element={<DashboardPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dashboard/profile" element={<ProfilePage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dashboard/my-skills" element={<MySkillPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/offer-skill" element={<OfferSkillPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/marketplace" element={<MarketplacePage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/women-zone" element={<WomenOnlyZonePage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dashboard/received-requests" element={<ReceivedRequestsPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dashboard/messages" element={<MessagesPage onChatbotToggle={toggleChatbot} />} />
+          <Route exact path="/dashboard/reviews" element={<ReviewsPage onChatbotToggle={toggleChatbot} />} />
 
-            {/*
-                Important: If App.js is the root component rendered by index.js:
-                Then you would render ChatbotModal here directly like this:
-                {isChatbotOpen && <ChatbotModal onClose={() => setIsChatbotOpen(false)} />}
-                However, your index.js suggests RootApp handles global state and routes,
-                so we'll modify index.js next. This App.js can remain as a standard page component.
-            */}
-        </div>
-    );
+          {/* Admin routes */}
+          <Route exact path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route index element={<AdminDashboard />} />
+            <Route exact path="users" element={<ManageUsers />} />
+            <Route exact path="skills" element={<ManageSkills />} />
+            <Route exact path="reports" element={<ManageReports />} />
+          </Route>
+        </Routes>
+
+        {/* Global Chatbot overlay */}
+        {showChatbot && <ChatbotModal onClose={toggleChatbot} />}
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;
